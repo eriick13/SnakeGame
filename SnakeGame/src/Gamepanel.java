@@ -29,7 +29,7 @@ public class Gamepanel extends JPanel implements Runnable, KeyListener{
 	
 	private Random r;
 	
-	private int xCoor = 10, yCoor = 10, size = 10;
+	private int xCoor = 10, yCoor = 10, size = 5;
 	private int ticks = 0;
 	 
 
@@ -70,7 +70,7 @@ public class Gamepanel extends JPanel implements Runnable, KeyListener{
 			 snake.add(b);
 		 }
 		 ticks++;
-		 if(ticks > 300000) {
+		 if(ticks > 500000) {
 			 if(right) xCoor++;
 			 if(left) xCoor--;
 			 if(up) yCoor--;
@@ -170,7 +170,7 @@ public class Gamepanel extends JPanel implements Runnable, KeyListener{
         left = false;
         down = false;
         up = false;
-        size = 15;
+        size = 5;
         snake.clear();
         apples = new ArrayList<Apple>();
         b = new BodyPart(xCoor, yCoor, 10);
