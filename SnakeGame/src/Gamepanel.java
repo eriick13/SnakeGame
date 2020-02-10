@@ -4,7 +4,9 @@ import java.awt.Graphics;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.util.ArrayList;
+import java.util.Random;
 
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
 public class Gamepanel extends JPanel implements Runnable, KeyListener{
@@ -22,8 +24,14 @@ public class Gamepanel extends JPanel implements Runnable, KeyListener{
 	private BodyPart b;
 	private ArrayList<BodyPart> snake;
 	
-	private int xCoor = 10, yCoor = 10, size = 5;
+	private Apple apple;
+	private ArrayList<Apple> apples;
+	
+	private Random r;
+	
+	private int xCoor = 10, yCoor = 10, size = 10;
 	private int ticks = 0;
+	 
 
 	public Gamepanel() {
 		setFocusable(true);
@@ -31,7 +39,10 @@ public class Gamepanel extends JPanel implements Runnable, KeyListener{
 		setPreferredSize(new Dimension(WIDTH, HEIGHT));
 		addKeyListener(this);
 		
-		snake = new ArrayList<BodyPart>(); 
+		snake = new ArrayList<BodyPart>();
+		apples = new ArrayList<Apple>();
+		
+		r = new Random();
 		
 		start();
 	}
@@ -59,7 +70,7 @@ public class Gamepanel extends JPanel implements Runnable, KeyListener{
 			 snake.add(b);
 		 }
 		 ticks++;
-		 if(ticks > 250000) {
+		 if(ticks > 300000) {
 			 if(right) xCoor++;
 			 if(left) xCoor--;
 			 if(up) yCoor--;
@@ -74,7 +85,64 @@ public class Gamepanel extends JPanel implements Runnable, KeyListener{
 				 snake.remove(0);
 			 }			 
 		 }
+		 if(apples.size() == 0) {
+			 int xCoor = r.nextInt(49);
+			 int yCoor = r.nextInt(49);
+			 
+			 apple = new Apple(xCoor, yCoor, 10);
+			 apples.add(apple);
+		 }
+		 
+		 for(int i = 0; i < apples.size(); i++) {
+			 if(xCoor == apples.get(i).getxCoor() && yCoor == apples.get(i).getyCoor()) {
+				 size++;
+				 apples.remove(i);
+				 i++;
+			 }
+		 }
+//		 //collision on snake body part
+//		 for(int i = 0; i < snake.size(); i++) {
+//			 if(xCoor == snake.get(i).getxCoor() && yCoor == snake.get(i).getyCoor()) {
+//				 if(i != snake.size() - 1) {
+//					 System.out.println("Game Over");
+//					 stop();
+//				 }
+//			 }
+//		 }
+//		 
+//		 //collision on border
+//		 if(xCoor < 0 || xCoor > 49 || yCoor < 0 || yCoor > 49) {
+//			 System.out.println("Game Over");
+//			 stop();
+//		 }
+		 for(int i = 0; i < snake.size(); i++) {
+	            if(xCoor == snake.get(i).getxCoor() && yCoor == snake.get(i).getyCoor()) {
+	                if(i != snake.size() - 1) {
+	                    int answer = JOptionPane.showConfirmDialog(null, "Retry?");
+	                    if (answer == 0) {
+	                        restart();
+	                    } else if(answer == 1) {
+	                        System.exit(0);
+	                    } else {
+	                        stop();
+	                    }
+	                }
+	            }
+	        }
+
+	        if (xCoor < 0 || xCoor > 49 || yCoor < 0 || yCoor > 49) {
+	            int answer = JOptionPane.showConfirmDialog(null, "Retry?");
+	            if (answer == 0) {
+	                restart();
+	            } else if(answer == 1) {
+	                    System.exit(0);
+	            } else {
+	                stop();
+	            }
+	        }
 	}
+
+
 
 	public void paint(Graphics g) {
 		g.clearRect(0, 0, WIDTH, HEIGHT);
@@ -91,7 +159,25 @@ public class Gamepanel extends JPanel implements Runnable, KeyListener{
 		for(int i = 0; i < snake.size() ; i++) {
 			snake.get(i).draw(g);
 		}
+		for(int i = 0; i < apples.size(); i++) {
+			apples.get(i).draw(g);
+		}
 	}
+	public void restart() {
+        xCoor = 10;
+        yCoor = 10;
+        right = true;
+        left = false;
+        down = false;
+        up = false;
+        size = 15;
+        snake.clear();
+        apples = new ArrayList<Apple>();
+        b = new BodyPart(xCoor, yCoor, 10);
+        snake.add(b);
+        apple = new Apple(xCoor, yCoor, 10);
+        apples.add(apple);
+    }
 
 	@Override
 	public void run() {
