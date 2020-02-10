@@ -1,5 +1,6 @@
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
@@ -31,6 +32,8 @@ public class Gamepanel extends JPanel implements Runnable, KeyListener{
 	
 	private int xCoor = 10, yCoor = 10, size = 5;
 	private int ticks = 0;
+	public int score = 0;
+	public String scoreString;
 	 
 
 	public Gamepanel() {
@@ -98,6 +101,8 @@ public class Gamepanel extends JPanel implements Runnable, KeyListener{
 				 size++;
 				 apples.remove(i);
 				 i++;
+				 score++;
+				 System.out.println("SCORE: " + score);
 			 }
 		 }
 //		 //collision on snake body part
@@ -162,6 +167,11 @@ public class Gamepanel extends JPanel implements Runnable, KeyListener{
 		for(int i = 0; i < apples.size(); i++) {
 			apples.get(i).draw(g);
 		}
+		scoreString = Integer.toString(score);
+		g.setColor(Color.GREEN);
+		Font stringFont = new Font("SansSerif", Font.BOLD, 20);
+		g.setFont(stringFont);
+		g.drawString(scoreString, 230, 30);
 	}
 	public void restart() {
         xCoor = 10;
@@ -177,6 +187,7 @@ public class Gamepanel extends JPanel implements Runnable, KeyListener{
         snake.add(b);
         apple = new Apple(xCoor, yCoor, 10);
         apples.add(apple);
+        score = -1;
     }
 
 	@Override
